@@ -431,8 +431,6 @@
                     
                       
                     
-                      
-                    
                     <span class="site-state-item-count">1</span>
                     <span class="site-state-item-name">标签</span>
                   
@@ -657,15 +655,15 @@
     
 
     $(function() {
-      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'TayOxrjskWTdTvNpTU255SEDR-gzGzoHsz#<app_id>')
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'P8aPSBBaJ8Wr6G3ntVSWbVU9-gzGzoHsz#<app_id>')
         .done(function({ api_server }) {
           var Counter = function(method, url, data) {
             return $.ajax({
               method: method,
               url: 'https://' + api_server + '/1.1' + url,
               headers: {
-                'X-LC-Id': 'TayOxrjskWTdTvNpTU255SEDR-gzGzoHsz#<app_id>',
-                'X-LC-Key': 'Mezddal9oSaJ1QJytx06VArL#<app_key>',
+                'X-LC-Id': 'P8aPSBBaJ8Wr6G3ntVSWbVU9-gzGzoHsz#<app_id>',
+                'X-LC-Key': 'MfYDAtoDtb2MwtRJpnm84Xrg#<app_key>',
                 'Content-Type': 'application/json',
               },
               data: data
