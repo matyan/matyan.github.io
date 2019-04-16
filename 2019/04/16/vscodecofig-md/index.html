@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="动手配置VSCODE-C语言编译环境 文件准备： 下载VSCODE，并安装； 下载LLVM，MinGW， 下载LLVM，安装LLVM(low level virtual machine),并记住安装路径（如：G:\LLVM） 下载MinGW, 解压，然后复制安装目录下的所有内容至目录G:\LLVM下，      配置四个JSON文件$^{[1]}$ c_cpp_properties.json（主要">
+<meta name="keywords" content="vscode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vscodecofig.md">
+<meta property="og:url" content="http://yoursite.com/2019/04/16/vscodecofig-md/index.html">
+<meta property="og:site_name" content="莫问前程">
+<meta property="og:description" content="动手配置VSCODE-C语言编译环境 文件准备： 下载VSCODE，并安装； 下载LLVM，MinGW， 下载LLVM，安装LLVM(low level virtual machine),并记住安装路径（如：G:\LLVM） 下载MinGW, 解压，然后复制安装目录下的所有内容至目录G:\LLVM下，      配置四个JSON文件$^{[1]}$ c_cpp_properties.json（主要">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2019/04/16/vscodecofig-md/copy.png">
+<meta property="og:updated_time" content="2019-04-16T09:13:59.741Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vscodecofig.md">
+<meta name="twitter:description" content="动手配置VSCODE-C语言编译环境 文件准备： 下载VSCODE，并安装； 下载LLVM，MinGW， 下载LLVM，安装LLVM(low level virtual machine),并记住安装路径（如：G:\LLVM） 下载MinGW, 解压，然后复制安装目录下的所有内容至目录G:\LLVM下，      配置四个JSON文件$^{[1]}$ c_cpp_properties.json（主要">
+<meta name="twitter:image" content="http://yoursite.com/2019/04/16/vscodecofig-md/copy.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/04/16/vscodecofig-md/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>vscodecofig.md | 莫问前程</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">莫问前程</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">Ignorance Is Blind Bliss</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+    <div class="reading-progress-bar"></div>
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/16/vscodecofig-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="yan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/mycat.png#/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="莫问前程">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vscodecofig.md
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-16 17:06:45 / 修改时间：17:13:59" itemprop="dateCreated datePublished" datetime="2019-04-16T17:06:45+08:00">2019-04-16</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/04/16/vscodecofig-md/" class="leancloud_visitors" data-flag-title="vscodecofig.md">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="动手配置VSCODE-C语言编译环境"><a href="#动手配置VSCODE-C语言编译环境" class="headerlink" title="动手配置VSCODE-C语言编译环境"></a>动手配置VSCODE-C语言编译环境</h3><hr>
+<h4 id="文件准备："><a href="#文件准备：" class="headerlink" title="文件准备："></a>文件准备：</h4><ul>
+<li>下载VSCODE，并安装；</li>
+<li>下载<strong>LLVM</strong>，<strong>MinGW</strong>，<ul>
+<li><a href="http://releases.llvm.org/download.html" target="_blank" rel="noopener">下载</a>LLVM，安装LLVM(low level virtual machine),并记住安装路径（如：G:\LLVM）</li>
+<li>下载MinGW, 解压，然后复制安装目录下的所有内容至目录G:\LLVM下，</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2019/04/16/vscodecofig-md/copy.png" alt="1555404613808"></p>
+<hr>
+<h4 id="配置四个JSON文件-1"><a href="#配置四个JSON文件-1" class="headerlink" title="配置四个JSON文件$^{[1]}$"></a>配置四个JSON文件$^{[1]}$</h4><ul>
+<li><p>c_cpp_properties.json（主要注意将compilerpath值替换成llvm安装目录，如：G:/LLVM/bin/gcc.exe）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;configurations&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;name&quot;: &quot;MinGW&quot;,</span><br><span class="line">            &quot;intelliSenseMode&quot;: &quot;gcc-x64&quot;,</span><br><span class="line">            &quot;compilerPath&quot;: &quot;G:/LLVM/bin/gcc.exe&quot;,</span><br><span class="line">            &quot;includePath&quot;: [</span><br><span class="line">                &quot;$&#123;workspaceFolder&#125;&quot;</span><br><span class="line">            ],</span><br><span class="line">            &quot;defines&quot;: [],</span><br><span class="line">            &quot;browse&quot;: &#123;</span><br><span class="line">                &quot;path&quot;: [</span><br><span class="line">                    &quot;$&#123;workspaceFolder&#125;&quot;</span><br><span class="line">                ],</span><br><span class="line">                &quot;limitSymbolsToIncludedHeaders&quot;: true,</span><br><span class="line">                &quot;databaseFilename&quot;: &quot;&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;cStandard&quot;: &quot;c11&quot;,</span><br><span class="line">            &quot;cppStandard&quot;: &quot;c++17&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    &quot;version&quot;: 4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>launch.json</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// https://github.com/Microsoft/vscode-cpptools/blob/master/launch.md</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">    <span class="attr">"configurations"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            "name": "(gdb) Launch", // 配置名称，将会在启动配置的下拉菜单中显示</span><br><span class="line">            "type": "cppdbg", // 配置类型，这里只能为cppdbg</span><br><span class="line">            "request": "launch", // 请求配置类型，可以为launch（启动）或attach（附加）</span><br><span class="line">            "program": "$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;.exe", // 将要进行调试的程序的路径</span><br><span class="line">            "args": [], // 程序调试时传递给程序的命令行参数，一般设为空即可</span><br><span class="line">            "stopAtEntry": false, // 设为true时程序将暂停在程序入口处，我一般设置为true</span><br><span class="line">            "cwd": "$&#123;workspaceFolder&#125;", // 调试程序时的工作目录</span><br><span class="line">            "environment": [], // 环境变量</span><br><span class="line">            "externalConsole": true, // 调试时是否显示控制台窗口，一般设置为true显示控制台</span><br><span class="line">            "internalConsoleOptions": "neverOpen", // 如果不设为neverOpen，调试时会跳到“调试控制台”选项卡，你应该不需要对gdb手动输命令吧？</span><br><span class="line">            "MIMode": "gdb", // 指定连接的调试器，可以为gdb或lldb。但我没试过lldb</span><br><span class="line">            "miDebuggerPath": "gdb.exe", // 调试器路径，Windows下后缀不能省略，Linux下则不要</span><br><span class="line">            "setupCommands": [ // 用处未知，模板如此</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">"description"</span>: <span class="string">"Enable pretty-printing for gdb"</span>,</span><br><span class="line">                    <span class="attr">"text"</span>: <span class="string">"-enable-pretty-printing"</span>,</span><br><span class="line">                    <span class="attr">"ignoreFailures"</span>: <span class="literal">false</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">            "preLaunchTask": "Compile" // 调试会话开始前执行的任务，一般为编译程序。与tasks.json的label相对应</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>settings.json</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "files.defaultLanguage": "c", // ctrl+N新建文件后默认的语言</span><br><span class="line">    "editor.formatOnType": true, // 输入时就进行格式化，默认触发字符较少，分号可以触发</span><br><span class="line">    "editor.snippetSuggestions": "top", // snippets代码优先显示补全</span><br><span class="line"></span><br><span class="line">    "code-runner.runInTerminal": true, // 设置成false会在“输出”中输出，无法输入</span><br><span class="line">    "code-runner.executorMap": &#123;</span><br><span class="line">        "c": "cd $dir &amp;&amp; clang $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -std=c11 &amp;&amp; $dir$fileNameWithoutExt",</span><br><span class="line">        "cpp": "cd $dir &amp;&amp; clang++ $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -std=c++17 &amp;&amp; $dir$fileNameWithoutExt"</span><br><span class="line">    &#125;, // 设置code runner的命令行</span><br><span class="line">    "code-runner.saveFileBeforeRun": true, // run code前保存</span><br><span class="line">    "code-runner.preserveFocus": true, // 若为false，run code后光标会聚焦到终端上。如果需要频繁输入数据可设为false</span><br><span class="line">    "code-runner.clearPreviousOutput": false, // 每次run code前清空属于code runner的终端消息</span><br><span class="line"></span><br><span class="line">    "C_Cpp.clang_format_sortIncludes": true, // 格式化时调整include的顺序（按字母排序）</span><br><span class="line">    "C_Cpp.intelliSenseEngine": "Default", // 可以为Default或Tag Parser，后者较老，功能较简单。具体差别参考cpptools扩展文档</span><br><span class="line">    "C_Cpp.errorSquiggles": "Disabled", // 因为有clang的lint，所以关掉</span><br><span class="line">    "C_Cpp.autocomplete": "Disabled", // 因为有clang的补全，所以关掉</span><br><span class="line"></span><br><span class="line">    "clang.cflags": [ // 控制c语言静态检测的参数</span><br><span class="line">        "--target=x86_64-w64-mingw",</span><br><span class="line">        "-std=c11",</span><br><span class="line">        <span class="string">"-Wall"</span></span><br><span class="line">    ],</span><br><span class="line">    "clang.cxxflags": [ // 控制c++静态检测时的参数</span><br><span class="line">        "--target=x86_64-w64-mingw",</span><br><span class="line">        "-std=c++17",</span><br><span class="line">        <span class="string">"-Wall"</span></span><br><span class="line">    ],</span><br><span class="line">    "clang.completion.enable":true // 效果效果比cpptools要好</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>tasks.json</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">/ https://code.visualstudio.com/docs/editor/tasks</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"2.0.0"</span>,</span><br><span class="line">    <span class="attr">"tasks"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            "label": "Compile", // 任务名称，与launch.json的preLaunchTask相对应</span><br><span class="line">            "command": "clang", // 要使用的编译器，C++用clang++</span><br><span class="line">            "args": [</span><br><span class="line">                "$&#123;file&#125;",</span><br><span class="line">                "-o", // 指定输出文件名，不加该参数则默认输出a.exe，Linux下默认a.out</span><br><span class="line">                "$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;.exe",</span><br><span class="line">                "-g", // 生成和调试有关的信息</span><br><span class="line">                "-Wall", // 开启额外警告</span><br><span class="line">                "-static-libgcc", // 静态链接libgcc</span><br><span class="line">                "--target=x86_64-w64-mingw", // clang的默认target为msvc，不加这一条就会找不到头文件；Linux下去掉这一条</span><br><span class="line">                "-std=c11" // C++最新标准为c++17，或根据自己的需要进行修改</span><br><span class="line">            ], // 编译命令参数</span><br><span class="line">            "type": "shell", // 可以为shell或process，前者相当于先打开shell再输入命令，后者是直接运行命令</span><br><span class="line">            "group": &#123;</span><br><span class="line">                "kind": "build",</span><br><span class="line">                "isDefault": true // 设为false可做到一个tasks.json配置多个编译指令，需要自己修改本文件，我这里不多提</span><br><span class="line">            &#125;,</span><br><span class="line">            "presentation": &#123;</span><br><span class="line">                "echo": true,</span><br><span class="line">                "reveal": "always", // 在“终端”中显示编译信息的策略，可以为always，silent，never。具体参见VSC的文档</span><br><span class="line">                "focus": false, // 设为true后可以使执行task时焦点聚集在终端，但对编译c和c++来说，设为true没有意义</span><br><span class="line">                "panel": "shared" // 不同的文件的编译信息共享一个终端面板</span><br><span class="line">            &#125;</span><br><span class="line">            // "problemMatcher":"$gcc" // 如果你不使用clang，去掉前面的注释符，并在上一条之后加个逗号。照着我的教程做的不需要改（也可以把这行删去)</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>[1]. Visual Studio Code 如何编写运行 C、C++ 程序？ - 知乎用户的回答 - 知乎<a href="https://www.zhihu.com/question/30315894/answer/154979413" target="_blank" rel="noopener">https://www.zhihu.com/question/30315894/answer/154979413</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+	
+	
+	<div>
+	
+<div style="text-align:center;color: #ccc;font-size:14px;">
+	------ 本文结束 ------</div>
+
+	</div>
+	
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vscode/" rel="tag"># vscode</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/12/learning-from-web/" rel="next" title="学习感悟">
+                <i class="fa fa-chevron-left"></i> 学习感悟
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/mycat.png#/images/avatar.gif" alt="yan">
+            
+              <p class="site-author-name" itemprop="name">yan</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#动手配置VSCODE-C语言编译环境"><span class="nav-number">1.</span> <span class="nav-text">动手配置VSCODE-C语言编译环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文件准备："><span class="nav-number">1.1.</span> <span class="nav-text">文件准备：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置四个JSON文件-1"><span class="nav-number">1.2.</span> <span class="nav-text">配置四个JSON文件$^{[1]}$</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reference"><span class="nav-number">2.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yan</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/reading_progress/reading_progress.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'P8aPSBBaJ8Wr6G3ntVSWbVU9-gzGzoHsz#<app_id>')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'P8aPSBBaJ8Wr6G3ntVSWbVU9-gzGzoHsz#<app_id>',
+                'X-LC-Key': 'MfYDAtoDtb2MwtRJpnm84Xrg#<app_key>',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
